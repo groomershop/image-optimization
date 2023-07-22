@@ -50,7 +50,7 @@ exports.handler = async (event) => {
     startTime = performance.now();
     try {
         // check if resizing is requested
-        var c = {};
+        var resizingOptions = {};
         resizingOptions.options.fit = 'contain';
         if (operationsJSON['width']) resizingOptions.width = parseInt(operationsJSON['width']);
         if (operationsJSON['height']) resizingOptions.height = parseInt(operationsJSON['height']);
