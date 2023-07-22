@@ -11,23 +11,20 @@ function handler(event) {
             switch (operation.toLowerCase()) {
                 case 'format': 
                     var SUPPORTED_FORMATS = ['auto', 'jpeg', 'webp', 'avif', 'png', 'svg', 'gif'];
-                    if (!request.querystring[operation]['value'] || !SUPPORTED_FORMATS.includes(request.querystring[operation]['value'].toLowerCase())) {
-                        var format = 'auto';
-                    } else {
+                    if (request.querystring[operation]['value'] && SUPPORTED_FORMATS.includes(request.querystring[operation]['value'].toLowerCase())) {
                         var format = request.querystring[operation]['value'].toLowerCase(); // normalize to lowercase
-                    }
-                    
-                    if (format === 'auto') {
-                        format = 'jpeg';
-                        if (request.headers['accept']) {
-                            if (request.headers['accept'].value.includes("avif")) {
-                                format = 'avif';
-                            } else if (request.headers['accept'].value.includes("webp")) {
-                                format = 'webp';
-                            } 
+                        if (format === 'auto') {
+                            format = 'jpeg';
+                            if (request.headers['accept']) {
+                                if (request.headers['accept'].value.includes("avif")) {
+                                    format = 'avif';
+                                } else if (request.headers['accept'].value.includes("webp")) {
+                                    format = 'webp';
+                                } 
+                            }
                         }
+                        normalizedOperations['format'] = format;
                     }
-                    normalizedOperations['format'] = format;
                     break;
                 case 'width':
                     if (request.querystring[operation]['value']) {
@@ -59,6 +56,18 @@ function handler(event) {
                 default: break;
             }
         });
+        
+        //if no format requested, then try to serve avif/webp if client support it
+        if (!normalizedOperations['format']) {
+            if (request.headers['accept']) {
+                if (request.headers['accept'].value.includes("avif")) {
+                    normalizedOperations['format'] = 'avif';
+                } else if (request.headers['accept'].value.includes("webp")) {
+                    normalizedOperations['format'] = 'webp';
+                } 
+            }
+        }
+        
         //rewrite the path to normalized version if valid operations are found
         if (Object.keys(normalizedOperations).length > 0) {
             // put them in order
