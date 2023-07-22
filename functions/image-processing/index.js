@@ -50,7 +50,8 @@ exports.handler = async (event) => {
     startTime = performance.now();
     try {
         // check if resizing is requested
-        var resizingOptions = {};
+        var c = {};
+        resizingOptions.options.fit = 'contain';
         if (operationsJSON['width']) resizingOptions.width = parseInt(operationsJSON['width']);
         if (operationsJSON['height']) resizingOptions.height = parseInt(operationsJSON['height']);
         if (resizingOptions) transformedImage = transformedImage.resize(resizingOptions);
