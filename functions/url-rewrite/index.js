@@ -64,7 +64,6 @@ function handler(event) {
                 default: break;
             }
         });
-        
         //rewrite the path to normalized version if valid operations are found
         if (Object.keys(normalizedOperations).length > 0) {
             // put them in order
