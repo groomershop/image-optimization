@@ -6,6 +6,14 @@ function handler(event) {
     var originalImagePath = request.uri;
     //  validate, process and normalize the requested operations in query parameters
     var normalizedOperations = {};
+    //if no format requested, then try to serve avif/webp if client support it
+    if (request.headers['accept']) {
+        if (request.headers['accept'].value.includes("avif")) {
+            normalizedOperations['format'] = 'avif';
+        } else if (request.headers['accept'].value.includes("webp")) {
+            normalizedOperations['format'] = 'webp';
+        } 
+    }
     if (request.querystring) {
         Object.keys(request.querystring).forEach(operation => {
             switch (operation.toLowerCase()) {
@@ -56,17 +64,6 @@ function handler(event) {
                 default: break;
             }
         });
-        
-        //if no format requested, then try to serve avif/webp if client support it
-        if (!normalizedOperations['format']) {
-            if (request.headers['accept']) {
-                if (request.headers['accept'].value.includes("avif")) {
-                    normalizedOperations['format'] = 'avif';
-                } else if (request.headers['accept'].value.includes("webp")) {
-                    normalizedOperations['format'] = 'webp';
-                } 
-            }
-        }
         
         //rewrite the path to normalized version if valid operations are found
         if (Object.keys(normalizedOperations).length > 0) {
