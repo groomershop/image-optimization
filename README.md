@@ -20,12 +20,12 @@ Note the following:
 AWS CDK is an open-source software development framework used to define cloud infrastructure in code and provision it through AWS CloudFormation. Follow these steps in your command line to deploy the image optimization solution with CDK, using the region and account information configured in your AWS CLI.
 
 ```
-git clone https://github.com/aws-samples/image-optimization.git 
+git clone https://github.com/groomershop/image-optimization.git 
 cd image-optimization
 npm install
 cdk bootstrap
 npm run build
-cdk deploy
+cdk deploy -c S3_IMAGE_BUCKET_NAME=’groomershop-prod-media’
 ```
 
 When the deployment is completed within minutes, the CDK output will include the domain name of the CloudFront distribution created for image optimization (ImageDeliveryDomain =YOURDISTRIBUTION.cloudfront.net). The stack will include an S3 bucket with sample images (OriginalImagesS3Bucket = YourS3BucketWithOriginalImagesGeneratedName). To verify that it is working properly, test the following optimized image URL https:// YOURDISTRIBUTION.cloudfront.net/images/rio/1.jpeg?format=auto&width=300.
